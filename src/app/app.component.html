@@ -1,0 +1,53 @@
+<ng-container *ngIf="false || state$ | async as state">
+  <main class="main-wrap" [ngClass]="{ 'main-wrap--move': state.modal.show }">
+    <div class="w">
+      <div class="w__l">
+        <div class="w__l__t">
+          <div class="m">
+            <div class="m__c" [ngClass]="{ 'm__c--r': i !== 0 }"
+              *ngFor="let item of state.game.hand.dealer; let i = index;" @fadeAnimation>
+              <app-card [symbol]="item.symbol" [rank]="item.rank"></app-card>
+            </div>
+          </div>
+        </div>
+        <div class="w__l__m">
+          <span class="w__l__m__d">You</span><span class="w__l__m__score">{{ state.game.score.player }}
+            {{ state.game.score.dealer }}</span><span class="w__l__m__d">Dealer</span>
+        </div>
+        <div class="w__l__b">
+          <div class="m">
+            <div class="m__c" [ngClass]="{ 'm__c--r': i !== 0 }"
+              *ngFor="let item of state.game.hand.player; let i = index;" @fadeAnimation>
+              <app-card [symbol]="item.symbol" [rank]="item.rank"></app-card>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w__r">
+        <span class="w__r__title">Keyboard Shortcuts</span>
+        <div>
+          <button class="action" [ngClass]="{ 'action--active' : state.keys.currentPressed === 'A' }"
+            (click)="toggle()">
+            <span class="action__w">
+              <span class="action__w__t">hit</span>
+              <span class="action__w__b">A</span>
+            </span>
+          </button>
+          <button class="action" [ngClass]="{ 'action--active' : state.keys.currentPressed === 'S' }" (click)="stay()">
+            <span class="action__w">
+              <span class="action__w__t">stay</span>
+              <span class="action__w__b">S</span>
+            </span>
+          </button>
+        </div>
+        <div class="w__r__b">
+          {{ state.keys | json }}
+          <br><br>
+          {{ state.game | json }}
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <app-bet></app-bet>
+</ng-container>

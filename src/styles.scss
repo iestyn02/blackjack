@@ -1,0 +1,129 @@
+@import url('https://cdn.axier.io/fonts/a5600835.css');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300&display=swap');
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Product Sans', 'Monaco', monospace;
+  overflow: hidden;
+  margin: 0;
+  color: #a0a2ae;
+  background: #00c39a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.main-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  // background: #121418;
+  background: #15181b;
+  background-repeat: no-repeat;
+  background-position: 50% 10em;
+  background-size: 75% auto;
+}
+
+/* Links */
+
+a,
+.btn {
+  text-decoration: none;
+  color: #d17c78;
+  outline: none;
+}
+
+.hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+
+/* Icons */
+
+.icon {
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  margin: 0 auto;
+  fill: currentColor;
+}
+
+
+/* Header */
+
+.codrops-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  padding: 2.5em 2.75em 2.5em 1.5em;
+  text-align: left;
+}
+
+
+/* Top Navigation Style */
+
+.codrops-links {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.codrops-links::after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 2px;
+  height: 70%;
+  opacity: 0.1;
+  background: currentColor;
+  transform: rotate3d(0, 0, 1, 22.5deg);
+}
+
+.codrops-icon {
+  display: inline-block;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+@media screen and (max-width: 40em) {
+  .search-wrap {
+    font-size: 0.85em;
+    position: absolute;
+    top: 2.15em;
+    right: 2em;
+  }
+}
+
+/************************/
+/* Transitions 			*/
+/************************/
+
+.main-wrap {
+  position: relative;
+  transition: transform 0.5s;
+}
+
+.main-wrap--move {
+  transform: scale3d(0.7, 0.7, 1);
+}
+
+.main-wrap--move .btn--search {
+  pointer-events: none;
+  opacity: 0;
+}
