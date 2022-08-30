@@ -1,22 +1,24 @@
 <ng-container *ngIf="false || state$ | async as state">
   <div class="search" [ngClass]="{ 'search--open': state.modal.show }">
-    <button id="btn-search-close" (click)="close()" class="btn btn--search-close" aria-label="Close search form"><svg
+    <!-- <button id="btn-search-close" (click)="close()" class="btn btn--search-close" aria-label="Close search form"><svg
         class="icon icon--cross">
-      </svg></button>
-    <form [formGroup]="form" class="search__form" (submit)="submit($event, form, 3)" novalidate>
-      <input class="search__input" name="search" formControlName="value" type="search" placeholder="" autocomplete="off"
-        autocorrect="off" autocapitalize="off" spellcheck="false" />
-      <span class="search__info">Hit enter to search or ESC to close</span>
+      </svg></button> -->
+    <form [formGroup]="form" class="search__form" [ngClass]="{ 'search__form--invalid' : !form.valid }"
+      (submit)="submit($event, form, form.value.value)" novalidate>
+
+      <input class="search__input" #input name="search" formControlName="value" placeholder="Stake" autocomplete="off"
+        type="number" min="0" [max]="state.game.balance" autocorrect="off" autocapitalize="off" spellcheck="false"
+        *ngIf="state.modal.show" (ngInit)="focus()" />
+      <span class="search__info">{{form.valid ? 'Hit enter to place bet' : 'Invalid bet/stake amount' }}</span>
     </form>
     <div class="search__related">
       <div class="search__suggestion">
-        <h3>May We Suggest?</h3>
-        <p>#drone #funny #catgif #broken #lost #hilarious #good #red #blue #nono #why #yes #yesyes #aliens #green</p>
+        <h3>Instructions</h3>
+        <p>Place a bet and then hit Enter ↵ to proceed with the hand</p>
       </div>
       <div class="search__suggestion">
-        <h3>Needle, Where Art Thou?</h3>
-        <p>#broken #lost #good #red #funny #lala #hilarious #catgif #blue #nono #why #yes #yesyes #aliens #green #drone
-        </p>
+        <h3></h3>
+        <p>Made with ❤️ by iestyn02</p>
       </div>
     </div>
   </div>

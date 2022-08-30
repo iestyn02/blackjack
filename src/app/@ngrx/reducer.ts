@@ -13,6 +13,8 @@ export const init: State['_'] = {
   keys: { lastPressed: null, currentPressed: null },
   game: {
     finish: false,
+    balance: 1000,
+    stake: 10,
     score: {
       dealer: 0,
       player: 0,
@@ -37,11 +39,33 @@ export const reducer = createReducer(
       ...props,
     },
   })),
-  on(actions.addCard, (state, { identity }) => {
+  on(actions.setBet, (state, { bet }) => ({
+    ...state,
+    game: {
+      ...state.game,
+      stake: bet,
+    },
+  })),
+  on(actions.resetGame, (state) => ({
+    ...state,
+    game: {
+      ...state.game,
+      finish: false,
+      hand: {
+        player: [],
+        dealer: [],
+      },
+      score: {
+        player: 0,
+        dealer: 0,
+      },
+    },
+  })),
+  on(actions.addCard, (state, { identity, end }) => {
     const _state = {
       ...state,
       game: {
-        finish: false,
+        ...state.game,
         hand: {
           player: state.game.hand.player.map((_) => _),
           dealer: state.game.hand.dealer.map((_) => _),
@@ -64,8 +88,7 @@ export const reducer = createReducer(
           (item: { rank: Rank; symbol: Symbol }) =>
             item.rank === rank && item.symbol === symbol
         ) === -1 &&
-      looping &&
-      state.game.score[identity] < 21
+      looping
     ) {
       const rand = Math.floor(Math.random() * 13) + 1;
 
@@ -92,7 +115,6 @@ export const reducer = createReducer(
       }
 
       if (
-        !state.game.finish &&
         state.game.hand['dealer']
           .concat(state.game.hand['player'])
           .findIndex(
@@ -122,8 +144,29 @@ export const reducer = createReducer(
       }
     }
 
-    if (identity === 'dealer' && _state.game.hand['dealer'].length >= 3) {
+    /** @note ~ determining if game has ended */
+
+    if (_state.game.score.player > 21) {
+      _state.game.balance = _state.game.balance - _state.game.stake;
       _state.game.finish = true;
+    } else if (_state.game.score.dealer > 21) {
+      _state.game.balance = _state.game.balance + _state.game.stake;
+      _state.game.finish = true;
+    } else if (_state.game.score.player === 21) {
+      _state.game.finish = true;
+      _state.game.balance = _state.game.balance + _state.game.stake / 2;
+    } else if (
+      end &&
+      (!(_state.game.score.dealer < 17) || _state.game.hand.dealer.length === 3)
+    ) {
+      _state.game.finish = true;
+      if (_state.game.score.player > _state.game.score.dealer) {
+        _state.game.balance = _state.game.balance + _state.game.stake;
+      } else if (_state.game.score.dealer > _state.game.score.player) {
+        _state.game.balance = _state.game.balance - _state.game.stake;
+      } else {
+        /** @draw */
+      }
     }
 
     return _state;

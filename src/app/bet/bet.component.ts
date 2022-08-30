@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 import {
   FormBuilder,
@@ -15,12 +21,18 @@ import { State } from '../@ngrx/state';
 
 import * as actions from '../@ngrx/actions';
 
+import { ANIMATION_SPEED } from '../app.component';
 @Component({
   selector: 'app-bet',
   templateUrl: './bet.component.html',
   styleUrls: ['./bet.component.scss'],
 })
 export class BetComponent {
+  @ViewChild('input')
+  public input!: ElementRef;
+
+  @Output() public submitEvent = new EventEmitter<void>();
+
   public state$: Observable<State['_']> = this.store.pipe(
     map((state: State) => state._)
   );
@@ -38,8 +50,19 @@ export class BetComponent {
     });
   }
 
+  public focus(): void {
+    this.input.nativeElement.focus();
+  }
+
   public submit($e: Event, form: FormGroup, value: number): void {
     $e.preventDefault();
-    this.close();
+    if (form.valid) {
+      this.store.dispatch({ type: actions.RESET_GAME });
+      this.store.dispatch({ type: actions.SET_BET, bet: value });
+      setTimeout(() => {
+        this.submitEvent.emit();
+      }, ANIMATION_SPEED);
+      this.close();
+    }
   }
 }

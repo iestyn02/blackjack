@@ -1,8 +1,9 @@
-<ng-container *ngIf="false || state$ | async as state">
+<ng-container *ngIf="state$ | async as state">
   <main class="main-wrap" [ngClass]="{ 'main-wrap--move': state.modal.show }">
     <div class="w">
       <div class="w__l">
         <div class="w__l__t">
+          <span class="w__l__t__s" [innerText]="state.game.score.dealer"></span>
           <div class="m">
             <div class="m__c" [ngClass]="{ 'm__c--r': i !== 0 }"
               *ngFor="let item of state.game.hand.dealer; let i = index;" @fadeAnimation>
@@ -11,10 +12,11 @@
           </div>
         </div>
         <div class="w__l__m">
-          <span class="w__l__m__d">You</span><span class="w__l__m__score">{{ state.game.score.player }}
-            {{ state.game.score.dealer }}</span><span class="w__l__m__d">Dealer</span>
+          <span *ngIf="state.game.finish" (ngInit)="toggle()"
+            [innerText]="gameStatus(state.game.score.player, state.game.score.dealer)"></span>
         </div>
         <div class="w__l__b">
+          <span class="w__l__b__s" [innerText]="state.game.score.player"></span>
           <div class="m">
             <div class="m__c" [ngClass]="{ 'm__c--r': i !== 0 }"
               *ngFor="let item of state.game.hand.player; let i = index;" @fadeAnimation>
@@ -24,30 +26,42 @@
         </div>
       </div>
       <div class="w__r">
-        <span class="w__r__title">Keyboard Shortcuts</span>
-        <div>
-          <button class="action" [ngClass]="{ 'action--active' : state.keys.currentPressed === 'A' }"
-            (click)="toggle()">
-            <span class="action__w">
-              <span class="action__w__t">hit</span>
-              <span class="action__w__b">A</span>
-            </span>
-          </button>
-          <button class="action" [ngClass]="{ 'action--active' : state.keys.currentPressed === 'S' }" (click)="stay()">
-            <span class="action__w">
-              <span class="action__w__t">stay</span>
-              <span class="action__w__b">S</span>
-            </span>
-          </button>
+        <div class="w__r__t">
+          <div class="w__r__t__t">
+            <span class="pill"><span class="pill__desc">Bet</span><span
+                class="pill__value">{{ state.game.stake | number }}</span></span>
+          </div>
+          <div class="w__r__t__b">
+            <span class="pill"><span class="pill__desc">Balance</span><span
+                class="pill__value">{{ state.game.balance | number }}</span></span>
+          </div>
         </div>
         <div class="w__r__b">
-          {{ state.keys | json }}
-          <br><br>
-          {{ state.game | json }}
+          <div class="w__r__b__t"></div>
+          <div class="w__r__b__b">
+            <table>
+              <tr>
+                <th colspan="2">
+                  Keyboard Controls
+                </th>
+              </tr>
+              <tr>
+                <td><span class="pill">A / Space</span></td>
+                <td>Hit</td>
+              </tr>
+              <tr>
+                <td><span class="pill">S</span></td>
+                <td>Stay</td>
+              </tr>
+              <tr>
+                <td><span class="pill">↵</span></td>
+                <td>Next Hand</td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-
   </main>
-  <app-bet></app-bet>
+  <app-bet (submitEvent)="init()"></app-bet>
 </ng-container>

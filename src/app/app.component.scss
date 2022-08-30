@@ -1,12 +1,12 @@
+$key-size: 55px;
+
 .w {
   display: flex;
   flex: 1;
   flex-direction: row;
   width: 100%;
-  max-width: 1200px;
 
   &__l {
-    // background: green;
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -16,6 +16,26 @@
     &__b {
       display: flex;
       flex: 1;
+      position: relative;
+
+      &__s {
+        position: absolute;
+        font-size: 80px;
+        z-index: 2;
+        color: #3f4147;
+      }
+    }
+
+    &__t {
+      &__s {
+        top: 130px;
+      }
+    }
+
+    &__b {
+      &__s {
+        bottom: 130px;
+      }
     }
 
     &__m {
@@ -24,16 +44,7 @@
       flex-direction: row;
       align-items: center;
       justify-content: center;
-
-      &__score {
-        font-size: 33px;
-        margin: 0 10px;
-        color: #ffffff;
-      }
-
-      &__d {
-        color: #b4b5b7;
-      }
+      font-size: 84px;
     }
 
     &__b {
@@ -43,17 +54,105 @@
   }
 
   &__r {
-    // background: red;
-    display: flex;
     flex-direction: column;
+    display: flex;
+    height: 100vh;
     width: 50%;
-    overflow: hidden;
 
-    &__title {
-      color: #ffffff;
-      font-size: 30px;
+    &__t {
+      display: flex;
+      flex-direction: column;
+
+      .pill {
+        display: inline-flex;
+        background: #1b1f24;
+        border-radius: 50px;
+        flex-direction: row;
+        align-items: center;
+        height: 75px;
+        padding: 0 20px;
+
+        &__desc {
+          font-size: 16px;
+          opacity: 0.5;
+          padding-right: 16px;
+        }
+
+        &__value {
+          font-size: 50px;
+        }
+      }
+
+      &__t {
+        align-items: flex-end;
+        padding-bottom: 20px;
+      }
+
+      &__b {
+        align-items: flex-start;
+        padding-top: 20px;
+      }
+
+      &__t,
+      &__b {
+        height: 50%;
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    &__t,
+    &__b {
+      height: 50vh;
+      display: flex;
+    }
+
+    &__b {
+      display: flex;
+      flex-direction: column;
+
+      &__t {
+        background: url('../assets/hotkeys.jpg');
+        height: 230px;
+        background-position-x: right;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: flex;
+      }
+
+      &__b {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        margin-right: 40px;
+        flex-direction: column;
+        align-items: flex-end;
+
+        table {
+          width: 200px;
+
+          .pill {
+            background: #1b1f24;
+            padding: 11px;
+            border-radius: 50px;
+          }
+
+          tr {
+            th {
+              text-align: left;
+              height: 50px;
+            }
+          }
+
+          tr {
+            height: 50px;
+          }
+        }
+      }
     }
   }
+
+
 }
 
 .m {
@@ -72,50 +171,6 @@
 
     &--r {
       margin-left: -102px;
-    }
-  }
-}
-
-.action {
-  border: 1px solid #181b20;
-  background: #181b20;
-  color: #ffffff;
-  box-shadow: 0 0 6px rgb(0 0 0 / 10%);
-  width: 60px;
-  height: 50px;
-  border-radius: 5px;
-  margin-right: 10px;
-  padding: 5px;
-  padding-left: 12px;
-  cursor: pointer;
-  transition: all 0.26s ease-in-out;
-
-  &--active {
-    background: rgb(1, 194, 154);
-    background: linear-gradient(90deg, rgba(1, 194, 154, 1) 0%, rgba(234, 206, 113, 1) 100%);
-    color: #ffffff;
-  }
-
-  &__w {
-    display: flex;
-    flex-direction: column;
-
-    &__t {
-      height: 10px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 600;
-      color: #707174;
-    }
-
-    &__b {
-      height: 25px;
-      margin-top: 3px;
-      font-size: 22px;
-      font-weight: 300;
-      text-align: left;
-      font-family: 'Poppins';
-
     }
   }
 }

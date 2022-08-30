@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { map, Observable, Subject } from 'rxjs';
 
-import { takeUntil } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 import * as actions from './@ngrx/actions';
 
@@ -12,6 +12,7 @@ import { State } from './@ngrx/state';
 
 import { fadeAnimation } from './app.animations';
 
+export const ANIMATION_SPEED = 200;
 @Component({
   selector: 'app-root',
   animations: [fadeAnimation],
@@ -19,23 +20,6 @@ import { fadeAnimation } from './app.animations';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  // ngOnInit() {
-  //     this.booksService.getBooks()
-  //         .pipe(
-  //            startWith([]),
-  //            filter(books => books.length > 0),
-  //         )
-  //         .subscribe(books => console.log(books));
-
-  //     this.booksService.getArchivedBooks()
-  //         .pipe(takeUntil(this.ngUnsubscribe))
-  //         .subscribe(archivedBooks => console.log(archivedBooks));
-  // }
-
-  // ngOnDestroy() {
-  //     this.ngUnsubscribe.next();
-  //     this.ngUnsubscribe.complete();
-
   @HostListener('document:keyup', ['$event']) onKeyupHandler(e: KeyboardEvent) {
     switch (e.key.toUpperCase()) {
       /** @hit */
@@ -45,12 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
         break;
       case 'S':
         this.keyEventHanlder();
-        // this.store.dispatch({
-        //   type: actions.SET_MODAL_PROPS,
-        //   props: {
-        //     show: true,
-        //   },
-        // });
         break;
       default:
         break;
@@ -69,11 +47,17 @@ export class AppComponent implements OnInit, OnDestroy {
         });
         break;
       /** @hit */
-      /** @stay */
       case 'A':
-        this.addCard();
+        if (
+          this._state &&
+          !this._state.game.finish &&
+          this._state.game.score.player < 21
+        ) {
+          this.addCard();
+        }
         this.keyEventHanlder('keydown', e.key);
         break;
+      /** @stay */
       case 'S':
         this.keyEventHanlder('keydown', e.key);
         this.stay();
@@ -84,12 +68,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public state$: Observable<State['_']> = this.store.pipe(
+    tap((state: State) => (this._state = state._)),
     map((state: State) => state._)
   );
 
   constructor(private store: Store<State>) {}
 
-  private subscribe = new Subject<void>();
+  public _state: State['_'] | undefined;
 
   private keyEventHanlder(
     action: 'keyup' | 'keydown' = 'keyup',
@@ -115,32 +100,26 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addCard(identity: 'player' | 'dealer' = 'player'): void {
+  private addCard(
+    identity: 'player' | 'dealer' = 'player',
+    end?: boolean
+  ): void {
     this.store.dispatch({
       type: actions.ADD_CARD,
       identity,
+      end,
     });
   }
 
   public stay(): void {
-    this.addCard('dealer');
-    this.store
-      .select('_')
-      .pipe(
-        map((state) => state.game),
-        takeUntil(this.subscribe)
-      )
-      .subscribe((state: State['_']['game']) => {
-        if (state.hand.dealer.length < 3) {
-          this.addCard('dealer');
-
-          if (state.score.dealer < 17) {
-            setTimeout(() => {
-              this.addCard('dealer');
-            }, 200);
-          }
+    if (this._state && !this._state.game.finish) {
+      this.addCard('dealer', true);
+      setTimeout(() => {
+        if (this._state && this._state.game.score.dealer < 17) {
+          this.addCard('dealer', true);
         }
-      });
+      }, ANIMATION_SPEED);
+    }
   }
 
   public toggle(show: boolean = true): void {
@@ -152,14 +131,53 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnInit(): void {
-    this.addCard('player');
-    this.addCard('dealer');
-    this.addCard('player');
+  private determineIfWin(
+    playerScore: number,
+    dealerScore: number
+  ): 'B' | 'L' | 'W' | 'D' {
+    if (playerScore > 21) {
+      return 'B';
+    } else if (dealerScore > 21) {
+      return 'W';
+    } else if (playerScore > dealerScore) {
+      return 'W';
+    } else if (dealerScore > playerScore) {
+      return 'L';
+    } else {
+      return 'D';
+    }
   }
 
-  public ngOnDestroy(): void {
-    this.subscribe.next();
-    this.subscribe.complete();
+  public gameStatus(playerScore: number, dealerScore: number): string {
+    switch (this.determineIfWin(playerScore, dealerScore)) {
+      case 'B':
+        return 'Bust!';
+      case 'W':
+        return 'You Win';
+      case 'L':
+        return 'You Lose';
+      default:
+        return 'Draw';
+    }
   }
+
+  public init(): void {
+    const add = (i: number) => {
+      if (i % 2) {
+        this.addCard('dealer');
+      } else {
+        this.addCard('player');
+      }
+    };
+
+    for (let i = 0; i < 3; i++) {
+      add(i);
+    }
+  }
+
+  public ngOnInit(): void {
+    this.init();
+  }
+
+  public ngOnDestroy(): void {}
 }

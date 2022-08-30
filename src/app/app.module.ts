@@ -10,6 +10,8 @@ import { StoreModule } from '@ngrx/store';
 
 import { reducer } from './@ngrx/reducer';
 
+import { NgInitDirective } from './app.directives';
+
 /** @components */
 import { AppComponent } from './app.component';
 
@@ -18,7 +20,13 @@ import { CardComponent, SafePipe } from './card/card.component';
 import { BetComponent } from './bet/bet.component';
 
 @NgModule({
-  declarations: [AppComponent, CardComponent, SafePipe, BetComponent],
+  declarations: [
+    SafePipe,
+    NgInitDirective,
+    AppComponent,
+    CardComponent,
+    BetComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

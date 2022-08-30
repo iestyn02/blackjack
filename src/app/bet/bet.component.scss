@@ -1,4 +1,5 @@
 /* Reset Search Input */
+$invalid-color: #E74C3C;
 
 .search__input {
   border: 0;
@@ -55,6 +56,15 @@
 
 .search__form {
   margin: 5em 0;
+  width: 100%;
+
+  &--invalid {
+
+    .search__input,
+    .search__info {
+      color: $invalid-color;
+    }
+  }
 }
 
 .search__input {
@@ -65,7 +75,7 @@
   box-sizing: border-box;
   width: 75%;
   padding: 0.05em 0;
-  color: #eaba82;
+  color: #01c29a;
   border-bottom: 3px solid;
 }
 
@@ -101,7 +111,7 @@
   padding: 0.85em 0;
   text-align: right;
   letter-spacing: 0;
-  color: #eaba82;
+  color: #01c29a;
 }
 
 .search__related {

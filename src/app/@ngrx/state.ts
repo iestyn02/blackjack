@@ -14,6 +14,8 @@ export interface State {
     };
     game: {
       finish: boolean;
+      balance: number;
+      stake: number;
       score: {
         dealer: number;
         player: number;
